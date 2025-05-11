@@ -1,0 +1,45 @@
+﻿@page "/cars"
+@inject ProductService ProductService
+@using YourProject.Models
+
+<h3 class="mb-4">Tüm Müsait Araçlar</h3>
+
+@if (products == null)
+{
+    <p>Yükleniyor...</p>
+}
+else if (!products.Any())
+{
+    <p>Hiç müsait araç bulunamadı.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var car in products)
+        {
+            <div class="col">
+                <div class="card h-100 shadow">
+                    <img src="@car.ImageUrl" class="card-img-top" alt="@car.Name" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@car.Name</h5>
+                        <p class="card-text">@car.Description</p>
+                        <p><strong>Fiyat:</strong> @car.Price ₺</p>
+                        <p><strong>Kategori:</strong> @car.Category</p>
+                        <p><strong>Adet:</strong> @car.Quantity</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAvailableProductsAsync();
+    }
+}
+
+

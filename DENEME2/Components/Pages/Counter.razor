@@ -1,0 +1,49 @@
+﻿@page "/tyty"
+@using YourProject.Data
+@inject AppDbContext db
+@using YourProject.Models
+@using Microsoft.EntityFrameworkCore;
+
+<h3>Arabalar</h3>
+
+@if (cars == null)
+{
+    <p>Yükleniyor...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>İsim</th>
+                <th>Açıklama</th>
+                <th>Fiyat</th>
+                <th>Adet</th>
+                <th>Kategori</th>
+                <th>Uygun mu?</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var car in cars)
+            {
+                <tr>
+                    <td>@car.Name</td>
+                    <td>@car.Description</td>
+                    <td>@car.Price</td>
+                    <td>@car.Quantity</td>
+                    <td>@car.Category</td>
+                    <td>@(car.IsAvailable ? "Evet" : "Hayır")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Product> cars;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cars = await db.Products.ToListAsync();
+    }
+}

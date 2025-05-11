@@ -1,0 +1,25 @@
+﻿@page "/test"
+@using AracKiralama.Models
+
+<EditForm Model="@customer" OnValidSubmit="HandleSubmit" FormName="TestForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <label>Ad:</label>
+    <InputText @bind-Value="customer.Name" class="form-control" />
+    <p>Girilen ad: @customer.Name</p>
+
+    <label>Soyad:</label>
+    <InputText @bind-Value="customer.Surname" class="form-control" />
+    <p>Girilen soyad: @customer.Surname</p>
+
+    <button type="submit">Gönder</button>
+</EditForm>
+
+@code {
+    private Customer customer = new();
+    private void HandleSubmit()
+    {
+        Console.WriteLine($"Ad: {customer.Name}, Soyad: {customer.Surname}");
+    }
+}

@@ -1,0 +1,88 @@
+﻿@page "/"
+@inject HttpClient HttpClient
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@using System.Text.Json.Serialization;
+@using Microsoft.AspNetCore.Components.Forms
+
+
+
+<h3 class="text-center my-4">Giriş Yap</h3>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body">
+                    <EditForm Model="loginModel" OnValidSubmit="HandleLogin" FormName="loginForm">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <InputText @bind-Value="loginModel.Email" @bind-Value:event="oninput" type="email" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Şifre</label>
+                            <InputText @bind-Value="loginModel.Password" @bind-Value:event="oninput" type="password" class="form-control" />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Giriş Yap</button>
+                    </EditForm>
+
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3" role="alert">
+                            @errorMessage
+                        </div>
+                    }
+
+                    <div class="text-center mt-3">
+                        <a href="/kaydol">Hesabınız yok mu? Kaydolun</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginModel loginModel = new();
+    private string errorMessage = "";
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            var response = await HttpClient.PostAsJsonAsync("http://84.247.20.87:32793/api/AppUser/login", loginModel);
+
+            Console.WriteLine($"İstek atıldı: {System.Text.Json.JsonSerializer.Serialize(loginModel)}");
+            Console.WriteLine($"Durum kodu: {response.StatusCode}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var token = await response.Content.ReadAsStringAsync();
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+                Navigation.NavigateTo("/cars");
+            }
+            else
+            {
+                errorMessage = "Geçersiz email veya şifre.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Bir hata oluştu: " + ex.Message;
+        }
+    }
+
+    public class LoginModel
+    {
+        [JsonPropertyName("Email")]
+        public string Email { get; set; } = "";
+
+        [JsonPropertyName("Password")]
+        public string Password { get; set; } = "";
+    }
+
+}
