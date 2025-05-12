@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "Yeni Profil",
+    "Projects": [
+      {
+        "Path": "DENEME2\\DENEME2.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\..\\..\\..\\source\\repos\\RentACar\\src\\Api\\WebApi\\RentACar.Api.WebApi\\RentACar.Api.WebApi.csproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "Yeni Profil (1)",
+    "Projects": []
+  }
+]
